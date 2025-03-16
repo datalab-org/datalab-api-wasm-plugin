@@ -326,17 +326,23 @@ except ImportError as e:
                     await pyodide.runPythonAsync(`
                         import micropip
                         try:
-                            await micropip.install('datalab-api')
+                            await micropip.install('datalab-api >= 0.2.8')
                             print("datalab-api package installed successfully!")
                             datalab_package_loaded = True
+                            datalab_package_exc = None
                         except Exception as e:
                             print(f"Could not install datalab-api package: {str(e)}")
                             print("Continuing without datalab-api...")
                             datalab_package_loaded = False
+                            datalab_package_exc = str(e)
                     `);
 
                     // Check if package was loaded
                     const packageLoaded = pyodide.runPython('datalab_package_loaded');
+                    if (!packageLoaded) {
+                        let packageLoadError = pyodide.runPython('datalab_package_exc');
+                        logToConsole('Failed to install datalab-api package: ' + packageLoadError, 'error');
+                    }
                     updatePackageStatus(packageLoaded);
 
                     if (packageLoaded) {
