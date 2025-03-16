@@ -2,36 +2,28 @@
 
 Some experients with some LLM-generated code for running the `datalab-api` package in the browser directly (without the notebook interface in front of it).
 
-The aim is to demonstrate how to use the `datalab-api` Python package directly in the browser using WebAssembly through Pyodide. 
+The aim is to demonstrate how to use the `datalab-api` Python package directly in the browser using WebAssembly through Pyodide.
 This approach eliminates the need for users to install Python or any dependencies locally.
 This repository will be used to test the feasibility of running the `datalab-api` package in the browser using Pyodide.
 
-## Features
-
-- **Browser-based Python execution** using Pyodide
-- **No installation required** for end users
-- **Direct package usage** - uses the actual `datalab-api` package from PyPI
-- **Step-by-step tests** using Playwright to verify functionality
-- **Automated testing** using GitHub Actions
-
-## Getting Started
+## Usage
 
 ### Running Locally
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/yourusername/datalab-api-wasm-plugin.git
+   git clone https://github.com/datalab-org/datalab-api-wasm-plugin.git
    cd datalab-api-wasm-plugin
    ```
 
 2. Install dependencies:
    ```bash
-   npm install
+   yarn install
    ```
 
 3. Start the development server:
    ```bash
-   npm start
+   yarn start
    ```
 
 4. Open your browser to `http://localhost:8080`
@@ -40,12 +32,12 @@ This repository will be used to test the feasibility of running the `datalab-api
 
 1. Build the Docker image:
    ```bash
-   npm run docker:build
+   yarn docker:build
    ```
 
 2. Run the container:
    ```bash
-   npm run docker:run
+   yarn docker:run
    ```
 
 3. Open your browser to `http://localhost:8080`
@@ -55,7 +47,7 @@ This repository will be used to test the feasibility of running the `datalab-api
 The project includes automated tests that verify Pyodide initialization and package functionality:
 
 ```bash
-npm test
+yarn test
 ```
 
 This runs a series of tests using Playwright:
@@ -69,7 +61,7 @@ This runs a series of tests using Playwright:
 ```
 .
 ├── index.html              # Main HTML file with Pyodide integration
-├── package.json            # NPM package configuration
+├── package.json            # Yarn package configuration
 ├── Dockerfile              # Docker configuration for containerization
 ├── README.md               # This documentation
 ├── data/                   # Example data files (optional)
@@ -99,4 +91,21 @@ This runs a series of tests using Playwright:
 ### Package Compatibility
 
 For a Python package to work in Pyodide, it must meet these requirements:
--
+- Be a pure Python package (no C extensions) or have WebAssembly-compatible builds
+- Have dependencies that are also compatible with Pyodide
+- Avoid system calls or features not available in the browser sandbox
+
+### Advanced Usage
+
+For more complex applications:
+- Consider using Playwright Test instead of raw Playwright for better test reporting
+- Explore creating a custom wheel specifically for Pyodide if your package has C extensions
+- Look into using SharedArrayBuffer for handling larger datasets
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.

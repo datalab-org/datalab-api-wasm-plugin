@@ -10,10 +10,10 @@ on:
 jobs:
   test-pyodide:
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@v5
-    
+
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
@@ -24,7 +24,7 @@ jobs:
     - name: Install dependencies
       run: |
         yarn install --frozen-lockfile --dev
-    
+
     - name: Start HTTP server
       run: |
         yarn http-server . -p 8080 &
@@ -33,7 +33,7 @@ jobs:
     - name: Run Pyodide tests
       run: |
         yarn test
-    
+
     - name: Archive test artifacts
       uses: actions/upload-artifact@v3
       if: always()

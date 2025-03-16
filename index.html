@@ -66,7 +66,7 @@
 <body>
     <div class="container mt-5">
         <h1 class="mb-4">Datalab API WASM Plugin Template</h1>
-        
+
         <div class="row mb-3">
             <div class="col">
                 <div class="card">
@@ -88,7 +88,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="row">
             <div class="col-md-8">
                 <div class="card">
@@ -111,14 +111,14 @@
                                     <button class="btn btn-success" id="runExampleBtn" disabled>Run Example</button>
                                     <button class="btn btn-danger" id="resetBtn" disabled>Reset</button>
                                 </div>
-                                
+
                                 <div id="loading" class="text-center">
                                     <div class="spinner-border text-primary" role="status">
                                         <span class="visually-hidden">Loading...</span>
                                     </div>
                                     <p class="mt-2" id="loading-text">Initializing Pyodide...</p>
                                 </div>
-                                
+
                                 <div id="plot-container" class="mt-4">
                                     <p class="text-muted">Visualization will appear here</p>
                                 </div>
@@ -129,55 +129,55 @@
 try:
     import datalab_api
     print(f"Successfully imported datalab_api!")
-    
+
     # Try to get the version
     try:
         print(f"Package version: {datalab_api.__version__}")
     except AttributeError:
         print("Version information not available")
-    
+
     # List available functions/methods
     print("\nAvailable attributes:")
     attributes = [attr for attr in dir(datalab_api) if not attr.startswith('_')]
     for attr in attributes:
         print(f"  - {attr}")
-    
+
 except ImportError as e:
     print(f"Failed to import datalab_api: {str(e)}")
-    
+
     # Create sample data for visualization demo
     import numpy as np
     import pandas as pd
     import matplotlib.pyplot as plt
     from js import document
-    
+
     # Create sample data
     print("\nCreating sample data for demonstration...")
     np.random.seed(42)
     n = 50
     x = np.linspace(0, 10, n)
     y = 2 * x + 1 + np.random.normal(0, 2, n)
-    
+
     # Create DataFrame
     data = pd.DataFrame({
         'x': x,
         'y': y,
         'category': np.random.choice(['A', 'B', 'C'], n)
     })
-    
+
     print(data.head())
-    
+
     # Create plot
     plt.figure(figsize=(10, 6))
     for category, group in data.groupby('category'):
         plt.scatter(group['x'], group['y'], label=category, alpha=0.7)
-    
+
     plt.xlabel('X Value')
     plt.ylabel('Y Value')
     plt.title('Sample Data Plot')
     plt.legend()
     plt.grid(alpha=0.3)
-    
+
     # Save to plot container
     from io import BytesIO
     import base64
@@ -185,11 +185,11 @@ except ImportError as e:
     plt.savefig(buf, format='png')
     buf.seek(0)
     img_str = base64.b64encode(buf.read()).decode('utf-8')
-    
+
     # Display the plot
     plot_div = document.getElementById('plot-container')
     plot_div.innerHTML = f'<img src="data:image/png;base64,{img_str}" />'
-    
+
     print("\nCreated sample visualization since datalab_api import failed")
 </textarea>
                                 <button class="btn btn-success mt-2" id="runCodeBtn" disabled>Run Code</button>
@@ -220,13 +220,13 @@ except ImportError as e:
         let pyodideStatusText = document.getElementById('pyodide-status-text');
         let packageStatusIndicator = document.getElementById('package-status');
         let packageStatusText = document.getElementById('package-status-text');
-        
+
         // Buttons
         const loadPyodideBtn = document.getElementById('loadPyodideBtn');
         const runExampleBtn = document.getElementById('runExampleBtn');
         const resetBtn = document.getElementById('resetBtn');
         const runCodeBtn = document.getElementById('runCodeBtn');
-        
+
         // Console logging functions
         function logToConsole(message, type = 'normal') {
             const logEntry = document.createElement('div');
@@ -235,72 +235,72 @@ except ImportError as e:
             consoleElement.appendChild(logEntry);
             consoleElement.scrollTop = consoleElement.scrollHeight;
         }
-        
+
         function clearConsole() {
             consoleElement.innerHTML = '';
         }
-        
+
         // Update status indicators
         function updatePyodideStatus(loaded) {
             pyodideStatusIndicator.className = `status-indicator ${loaded ? 'status-loaded' : 'status-not-loaded'}`;
             pyodideStatusText.textContent = `Pyodide: ${loaded ? 'Loaded' : 'Not Loaded'}`;
         }
-        
+
         function updatePackageStatus(loaded) {
             packageStatusIndicator.className = `status-indicator ${loaded ? 'status-loaded' : 'status-not-loaded'}`;
             packageStatusText.textContent = `Package: ${loaded ? 'Loaded' : 'Not Loaded'}`;
         }
-        
+
         // Load Pyodide
         async function loadPyodide() {
             loadPyodideBtn.disabled = true;
             loadingElement.style.display = 'block';
             clearConsole();
             logToConsole('Starting Pyodide initialization...', 'info');
-            
+
             try {
                 loadingTextElement.textContent = 'Loading Pyodide...';
                 logToConsole('Loading Pyodide core runtime...', 'info');
-                
+
                 // Import Pyodide script
                 const script = document.createElement('script');
                 script.src = 'https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js';
                 document.head.appendChild(script);
-                
+
                 await new Promise((resolve, reject) => {
                     script.onload = resolve;
                     script.onerror = () => reject(new Error('Failed to load Pyodide script'));
                 });
-                
+
                 logToConsole('Pyodide script loaded. Initializing...', 'info');
                 loadingTextElement.textContent = 'Initializing Python environment...';
-                
+
                 // Initialize Pyodide
                 pyodide = await loadPyodide();
                 updatePyodideStatus(true);
                 logToConsole('Pyodide initialized successfully!', 'success');
-                
+
                 // Set up stdout/stderr redirects
                 pyodide.runPython(`
                     import sys
                     from io import StringIO
-                    
+
                     class ConsoleOutput:
                         def __init__(self, console_type='stdout'):
                             self.console_type = console_type
                             self.buffer = StringIO()
-                            
+
                         def write(self, text):
                             self.buffer.write(text)
                             return len(text)
-                            
+
                         def flush(self):
                             self.buffer.flush()
-                    
+
                     sys.stdout = ConsoleOutput('stdout')
                     sys.stderr = ConsoleOutput('stderr')
                 `);
-                
+
                 // Install micropip
                 loadingTextElement.textContent = 'Installing micropip...';
                 logToConsole('Installing micropip package manager...', 'info');
@@ -309,7 +309,7 @@ except ImportError as e:
                     await pyodide_js.loadPackagesFromImports('import micropip')
                 `);
                 logToConsole('Micropip installed successfully!', 'success');
-                
+
                 // Install base packages
                 loadingTextElement.textContent = 'Installing core packages...';
                 logToConsole('Installing numpy, pandas, and matplotlib...', 'info');
@@ -318,7 +318,7 @@ except ImportError as e:
                     await micropip.install(['numpy', 'pandas', 'matplotlib'])
                 `);
                 logToConsole('Core packages installed successfully!', 'success');
-                
+
                 // Try to install datalab-api package
                 try {
                     loadingTextElement.textContent = 'Installing datalab-api package...';
@@ -334,31 +334,31 @@ except ImportError as e:
                             print("Continuing without datalab-api...")
                             datalab_package_loaded = False
                     `);
-                    
+
                     // Check if package was loaded
                     const packageLoaded = pyodide.runPython('datalab_package_loaded');
                     updatePackageStatus(packageLoaded);
-                    
+
                     if (packageLoaded) {
                         logToConsole('datalab-api package installed successfully!', 'success');
                     } else {
                         logToConsole('datalab-api package installation failed. Continuing with demo mode...', 'warning');
                     }
-                    
+
                 } catch (e) {
                     updatePackageStatus(false);
                     logToConsole('datalab-api package installation failed. Continuing with demo mode...', 'warning');
                     console.error('Package installation error:', e);
                 }
-                
+
                 // Enable buttons
                 runExampleBtn.disabled = false;
                 resetBtn.disabled = false;
                 runCodeBtn.disabled = false;
-                
+
                 loadingElement.style.display = 'none';
                 logToConsole('Pyodide environment ready. You can now run Python code!', 'success');
-                
+
             } catch (error) {
                 loadingElement.style.display = 'none';
                 loadPyodideBtn.disabled = false;
@@ -368,70 +368,70 @@ except ImportError as e:
                 console.error('Pyodide initialization error:', error);
             }
         }
-        
+
         // Run example code
         async function runExample() {
             if (!pyodide) {
                 logToConsole('Pyodide is not initialized. Please load Pyodide first.', 'error');
                 return;
             }
-            
+
             const codeEditor = document.getElementById('code-editor');
             await runPythonCode(codeEditor.value);
         }
-        
+
         // Run custom code
         async function runCustomCode() {
             if (!pyodide) {
                 logToConsole('Pyodide is not initialized. Please load Pyodide first.', 'error');
                 return;
             }
-            
+
             const codeEditor = document.getElementById('code-editor');
             await runPythonCode(codeEditor.value);
         }
-        
+
         // Reset environment
         function resetEnvironment() {
             document.getElementById('plot-container').innerHTML = '<p class="text-muted">Visualization will appear here</p>';
             clearConsole();
             logToConsole('Environment reset. You can run code again.', 'info');
         }
-        
+
         // Helper function to run Python code
         async function runPythonCode(code) {
             if (!pyodide) return;
-            
+
             try {
                 runExampleBtn.disabled = true;
                 runCodeBtn.disabled = true;
                 loadingElement.style.display = 'block';
                 loadingTextElement.textContent = 'Executing Python code...';
-                
+
                 clearConsole();
                 logToConsole('Running Python code...', 'info');
-                
+
                 // Clear previous stdout/stderr content
                 pyodide.runPython(`
                     sys.stdout.buffer = StringIO()
                     sys.stderr.buffer = StringIO()
                 `);
-                
+
                 // Run the code
                 await pyodide.runPythonAsync(code);
-                
+
                 // Get stdout and stderr content
                 const stdout = pyodide.runPython('sys.stdout.buffer.getvalue()');
                 const stderr = pyodide.runPython('sys.stderr.buffer.getvalue()');
-                
+
                 if (stdout) {
                     logToConsole(stdout);
                 }
-                
+
                 if (stderr) {
                     logToConsole(stderr, 'error');
                 }
-                
+
                 // Check if datalab_api was successfully imported
                 const packageImported = await pyodide.runPythonAsync(`
                     try:
@@ -440,11 +440,11 @@ except ImportError as e:
                     except ImportError:
                         False
                 `);
-                
+
                 updatePackageStatus(packageImported);
-                
+
                 logToConsole('Code execution completed.', 'success');
-                
+
             } catch (error) {
                 logToConsole(`Execution error: ${error.message}`, 'error');
                 console.error('Python execution error:', error);
@@ -454,7 +454,7 @@ except ImportError as e:
                 runCodeBtn.disabled = false;
             }
         }
-        
+
         // Event listeners
         loadPyodideBtn.addEventListener('click', loadPyodide);
         runExampleBtn.addEventListener('click', runExample);
