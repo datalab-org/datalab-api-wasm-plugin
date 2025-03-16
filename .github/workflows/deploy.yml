@@ -42,7 +42,7 @@ jobs:
           cp -r data dist/ 2>/dev/null || true
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v3
         with:
           path: './dist'
 
