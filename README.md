@@ -1,5 +1,8 @@
 # datalab-api-wasm-plugin
 
+> [!WARNING]  
+> This repository contains mostly untested LLM-generated code. It was created as a proof-of-concept for running Python APIs in the browser and should not be considered production-ready. Use at your own risk and please contribute improvements if you find issues.
+
 Some experients with some LLM-generated code for running the `datalab-api` package in the browser directly (without the notebook interface in front of it).
 
 The aim is to demonstrate how to use the `datalab-api` Python package directly in the browser using WebAssembly through Pyodide.
@@ -56,20 +59,6 @@ This runs a series of tests using Playwright:
 3. Importing the `datalab-api` package
 4. Running a basic example
 
-## Project Structure
-
-```
-.
-├── index.html              # Main HTML file with Pyodide integration
-├── package.json            # Yarn package configuration
-├── Dockerfile              # Docker configuration for containerization
-├── README.md               # This documentation
-├── data/                   # Example data files (optional)
-└── tests/
-    ├── test-pyodide.js     # Playwright test script
-    └── screenshots/        # Test screenshots (generated during tests)
-```
-
 ## How It Works
 
 1. **Pyodide Initialization**:
@@ -85,22 +74,6 @@ This runs a series of tests using Playwright:
    - Executes Python code directly in the browser
    - Captures output and errors
    - Displays visualizations in the UI
-
-## Development Notes
-
-### Package Compatibility
-
-For a Python package to work in Pyodide, it must meet these requirements:
-- Be a pure Python package (no C extensions) or have WebAssembly-compatible builds
-- Have dependencies that are also compatible with Pyodide
-- Avoid system calls or features not available in the browser sandbox
-
-### Advanced Usage
-
-For more complex applications:
-- Consider using Playwright Test instead of raw Playwright for better test reporting
-- Explore creating a custom wheel specifically for Pyodide if your package has C extensions
-- Look into using SharedArrayBuffer for handling larger datasets
 
 ## Contributing
 
