@@ -6,7 +6,7 @@
   "scripts": {
     "start": "yarn http-server . -o -p 8080",
     "test": "node tests/test-pyodide.js",
-    "build": "mkdir -p dist && cp index.html dist/ && cp -R data dist/",
+    "build": "mkdir -p dist && cp index.html dist/",
     "docker:build": "docker build -t datalab-api-wasm-plugin .",
     "docker:run": "docker run -p 8080:80 datalab-api-wasm-plugin"
   },
