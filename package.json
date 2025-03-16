@@ -1,18 +1,18 @@
 {
   "name": "datalab-api-wasm-plugin",
-  "version": "0.0.1",
-  "description": "A template for using the datalab Python API in a WASM environment with Pyodide",
+  "version": "1.0.0",
+  "description": "A template for using Datalab API in a WASM environment with Pyodide",
   "main": "index.js",
   "scripts": {
-    "start": "http-server . -o -p 8080",
+    "start": "yarn http-server . -o -p 8080",
     "test": "node tests/test-pyodide.js",
-    "build": "mkdir -p dist && cp index.html dist/ && cp -R pyodide_packages dist/ && cp -R data dist/",
+    "build": "mkdir -p dist && cp index.html dist/ && cp -R data dist/",
     "docker:build": "docker build -t datalab-api-wasm-plugin .",
     "docker:run": "docker run -p 8080:80 datalab-api-wasm-plugin"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/datalab-org/datalab-api-wasm-plugin.git"
+    "url": "git+https://github.com/yourusername/datalab-api-wasm-plugin.git"
   },
   "keywords": [
     "pyodide",
@@ -21,14 +21,14 @@
     "python",
     "browser"
   ],
-  "author": "datalab development team",
+  "author": "Your Name",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/datalab-org/datalab-api-wasm-plugin/issues"
+    "url": "https://github.com/yourusername/datalab-api-wasm-plugin/issues"
   },
-  "homepage": "https://github.com/datalab-org/datalab-api-wasm-plugin#readme",
+  "homepage": "https://github.com/yourusername/datalab-api-wasm-plugin#readme",
   "devDependencies": {
-    "http-server": "^14.1.1",
-    "playwright": "^1.34.0"
+    "http-server": "*",
+    "playwright": "*"
   }
 }

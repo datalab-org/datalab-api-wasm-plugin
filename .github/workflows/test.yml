@@ -12,26 +12,27 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v5
     
     - name: Setup Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
-        node-version: '16'
-    
+        node-version: "20"
+        cache: "yarn"
+        cache-dependency-path: ./yarn.lock
+
     - name: Install dependencies
       run: |
-        npm install -g puppeteer-core puppeteer http-server playwright
-        npx playwright install chromium
+        yarn install --frozen-lockfile --dev
     
     - name: Start HTTP server
       run: |
-        http-server . -p 8080 &
+        yarn http-server . -p 8080 &
         sleep 5  # Give the server time to start
-    
+
     - name: Run Pyodide tests
       run: |
-        node tests/test-pyodide.js
+        yarn test
     
     - name: Archive test artifacts
       uses: actions/upload-artifact@v3
