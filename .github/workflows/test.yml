@@ -1,0 +1,42 @@
+name: Test Pyodide Integration
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  test-pyodide:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+    
+    - name: Install dependencies
+      run: |
+        npm install -g puppeteer-core puppeteer http-server playwright
+        npx playwright install chromium
+    
+    - name: Start HTTP server
+      run: |
+        http-server . -p 8080 &
+        sleep 5  # Give the server time to start
+    
+    - name: Run Pyodide tests
+      run: |
+        node tests/test-pyodide.js
+    
+    - name: Archive test artifacts
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: test-screenshots
+        path: tests/screenshots
+        retention-days: 5
