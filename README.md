@@ -1,7 +1,7 @@
 # datalab-api-wasm-plugin
 
 > [!WARNING]  
-> This repository contains mostly untested LLM-generated code. It was created as a proof-of-concept for running Python APIs in the browser and should not be considered production-ready. Use at your own risk and please contribute improvements if you find issues.
+> This repository contains mostly untested LLM-generated code. It was created as a proof-of-concept for running the *datalab* Python API in the browser and should not be considered production-ready. Use at your own risk and please contribute improvements if you find issues.
 
 Some experients with some LLM-generated code for running the `datalab-api` package in the browser directly (without the notebook interface in front of it).
 
